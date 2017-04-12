@@ -17,6 +17,7 @@ import com.hyphenate.exceptions.HyphenateException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.ucai.live.LiveApplication;
 import cn.ucai.live.R;
 import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
@@ -112,6 +113,7 @@ public class RegisterActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            LiveApplication.getInstance().setCurrentUserName(username);
                             pd.dismiss();
                             showToast("注册成功");
                             /*startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

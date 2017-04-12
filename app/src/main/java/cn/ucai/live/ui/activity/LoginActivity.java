@@ -19,7 +19,9 @@ import android.widget.TextView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
+import cn.ucai.live.LiveApplication;
 import cn.ucai.live.R;
+import cn.ucai.live.utils.MD5;
 
 /**
  * A login screen that offers login via email/password.
@@ -56,6 +58,10 @@ public class LoginActivity extends BaseActivity {
       }
     });
 
+    if (LiveApplication.getInstance().getCurrentUsernName() != null){
+      mEmailView.setText(LiveApplication.getInstance().getCurrentUsernName());
+    }
+
 
     Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
     mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -73,8 +79,6 @@ public class LoginActivity extends BaseActivity {
         startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
       }
     });
-
-
   }
 
 
@@ -117,7 +121,7 @@ public class LoginActivity extends BaseActivity {
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      EMClient.getInstance().login(email.toString(), password.toString(), new EMCallBack() {
+      EMClient.getInstance().login(email.toString(),password.toString(), new EMCallBack() {
         @Override public void onSuccess() {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
