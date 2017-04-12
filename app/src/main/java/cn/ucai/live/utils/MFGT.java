@@ -7,7 +7,9 @@ import android.content.Intent;
 import com.hyphenate.easeui.domain.User;
 
 import cn.ucai.live.R;
+import cn.ucai.live.ui.activity.LoginActivity;
 import cn.ucai.live.ui.activity.MainActivity;
+import cn.ucai.live.ui.activity.RegisterActivity;
 
 
 /**
@@ -37,4 +39,8 @@ public class MFGT {
         activity.overridePendingTransition(R.anim.push_right_in,R.anim.push_right_out);
     }
 
+    public static void gotoLogin(Activity activity) {
+        startActivity(activity, new Intent(activity,LoginActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
 }

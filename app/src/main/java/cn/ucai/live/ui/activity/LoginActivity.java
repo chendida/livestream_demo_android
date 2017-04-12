@@ -21,6 +21,7 @@ import com.hyphenate.chat.EMClient;
 
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.R;
+import cn.ucai.live.db.SuperWeChatDBManager;
 import cn.ucai.live.utils.MD5;
 
 /**
@@ -121,7 +122,13 @@ public class LoginActivity extends BaseActivity {
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      EMClient.getInstance().login(email.toString(),password.toString(), new EMCallBack() {
+      //关闭数据库
+      SuperWeChatDBManager.getInstance().closeDB();
+      //重置当前用户名
+      String currentUsername = mEmailView.getText().toString().trim();
+      LiveApplication.getInstance().setCurrentUserName(currentUsername);
+
+      EMClient.getInstance().login(email.toString(),MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
