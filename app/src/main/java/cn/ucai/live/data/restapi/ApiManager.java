@@ -70,7 +70,7 @@ public class ApiManager {
         apiService = retrofit.create(ApiService.class);
 
         Retrofit retrofitLive = new Retrofit.Builder()
-                .baseUrl(I.SERVER_ROOT + "i#superwechat201612")
+                .baseUrl(I.SERVER_ROOT )
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(httpClient)
                 .build();
