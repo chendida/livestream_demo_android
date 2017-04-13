@@ -19,16 +19,17 @@ import android.widget.TextView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
-import cn.ucai.live.LiveApplication;
 import cn.ucai.live.R;
-import cn.ucai.live.db.SuperWeChatDBManager;
+import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.LiveHelper;
 import cn.ucai.live.utils.MD5;
+import cn.ucai.live.utils.PreferenceManager;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends BaseActivity {
-
+  private static final String TAG = "LoginActivity";
 
   // UI references.
   private AutoCompleteTextView mEmailView;
@@ -39,7 +40,7 @@ public class LoginActivity extends BaseActivity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    if(EMClient.getInstance().isLoggedInBefore()){
+    if(LiveHelper.getInstance().isLoggedIn()){
       startActivity(new Intent(this, MainActivity.class));
       finish();
       return;
@@ -58,9 +59,11 @@ public class LoginActivity extends BaseActivity {
         return false;
       }
     });
-
-    if (LiveApplication.getInstance().getCurrentUsernName() != null){
-      mEmailView.setText(LiveApplication.getInstance().getCurrentUsernName());
+    /*
+    如果首选项中用户名不为空，显示
+     */
+    if (PreferenceManager.getInstance().getCurrentUsername() != null){
+      mEmailView.setText(PreferenceManager.getInstance().getCurrentUsername());
     }
 
 
@@ -94,7 +97,7 @@ public class LoginActivity extends BaseActivity {
     mPasswordView.setError(null);
 
     // Store values at the time of the login attempt.
-    Editable email = mEmailView.getText();
+    final Editable email = mEmailView.getText();
     Editable password = mPasswordView.getText();
 
     boolean cancel = false;
@@ -122,14 +125,13 @@ public class LoginActivity extends BaseActivity {
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      //关闭数据库
-      SuperWeChatDBManager.getInstance().closeDB();
-      //重置当前用户名
-      String currentUsername = mEmailView.getText().toString().trim();
-      LiveApplication.getInstance().setCurrentUserName(currentUsername);
 
       EMClient.getInstance().login(email.toString(),MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
+            LiveHelper.getInstance().setCurrentUserName(email.toString());
+            L.e(TAG,"email.toString()  = " + email.toString());
+          //登录成功后，异步加载用户信息，并保存到首选项、内存中
+            LiveHelper.getInstance().getUserProfileManager().asyncGetAppCurrentUserInfo();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
