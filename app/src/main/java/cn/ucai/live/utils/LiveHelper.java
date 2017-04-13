@@ -191,7 +191,6 @@ public class LiveHelper {
 	 *            callback
 	 */
 	public void logout(boolean unbindDeviceToken, final EMCallBack callback) {
-		//endCall();
 		Log.d(TAG, "logout: " + unbindDeviceToken);
 		EMClient.getInstance().logout(unbindDeviceToken, new EMCallBack() {
 

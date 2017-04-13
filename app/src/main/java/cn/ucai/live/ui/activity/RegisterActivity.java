@@ -26,6 +26,7 @@ import cn.ucai.live.utils.CommonUtils;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.MD5;
 import cn.ucai.live.utils.MFGT;
+import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Result;
 import cn.ucai.live.utils.ResultUtils;
 
@@ -113,7 +114,10 @@ public class RegisterActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            LiveApplication.getInstance().setCurrentUserName(username);
+                            //将用户名保存到首选项中
+                            PreferenceManager.getInstance().setCurrentUserName(username);
+                            //将用户名保存到内存中
+                            //LiveApplication.getInstance().setCurrentUserName(username);
                             pd.dismiss();
                             showToast("注册成功");
                             /*startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
