@@ -3,14 +3,21 @@ package cn.ucai.live.data.restapi;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
+
 import java.io.IOException;
 import java.util.List;
 
+import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.Result;
+import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -19,17 +26,21 @@ import okhttp3.RequestBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by wei on 2017/2/14.
  */
 
 public class ApiManager {
+    private static final String TAG = "ApiManager";
     private String appkey;
     private ApiService apiService;
+    private LiveService liveService;
 
     private static  ApiManager instance;
 
@@ -58,6 +69,12 @@ public class ApiManager {
 
         apiService = retrofit.create(ApiService.class);
 
+        Retrofit retrofitLive = new Retrofit.Builder()
+                .baseUrl(I.SERVER_ROOT + "i#superwechat201612")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(httpClient)
+                .build();
+        liveService = retrofitLive.create(LiveService.class);
     }
 
 
@@ -81,6 +98,51 @@ public class ApiManager {
             instance = new ApiManager();
         }
         return instance;
+    }
+
+    public void getAllGifts(){
+        Call<String> allGifts = liveService.getAllGifts();
+        allGifts.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                L.e(TAG,"getAllGifts(),response = " + response);
+                String s = response.body();
+                Result result = ResultUtils.getListResultFromJson(s,Gift.class);
+                if (result != null && result.isRetMsg()){
+                    List<Gift>list = (List<Gift>) result.getRetData();
+                    for (Gift gift:list) {
+                        L.e(TAG,"gift = " + gift);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                L.e(TAG,"onFailure,t" + t.toString());
+            }
+        });
+    }
+
+    public void loadUserInfo(){
+        Call<String> call = liveService.loadUserInfo(EMClient.getInstance().getCurrentUser());
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String s = response.body();
+                Result result = ResultUtils.getResultFromJson(s, User.class);
+                if (result != null && result.isRetMsg()){
+                    User user = (User) result.getRetData();
+                    if (user != null){
+                        L.e(TAG,"loadUserInfo(),user = " + user);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                L.e(TAG,"onFailure,t = " + t.toString());
+            }
+        });
     }
 
 
