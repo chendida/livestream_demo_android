@@ -17,13 +17,17 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.live.R;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 
 import com.bumptech.glide.Glide;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.restapi.ApiManager;
 import cn.ucai.live.ui.GridMarginDecoration;
+import cn.ucai.live.utils.L;
+
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class LiveListFragment extends Fragment {
+    private static final String TAG = "LiveListFragment";
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private ProgressBar loadmorePB;
@@ -81,7 +86,21 @@ public class LiveListFragment extends Fragment {
     }
 
     private void loadGiftList(){
-        ApiManager.get().getAllGifts();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Gift> list = ApiManager.get().getAllGifts();
+                    if (list != null){
+                        for (Gift gift:list) {
+                            L.e(TAG,"gift = " + gift);
+                        }
+                    }
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
     private void showLiveList(final boolean isLoadMore){
         if(!isLoadMore)

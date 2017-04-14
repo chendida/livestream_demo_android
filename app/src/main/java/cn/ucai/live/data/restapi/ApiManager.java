@@ -100,40 +100,51 @@ public class ApiManager {
         return instance;
     }
 
-    public void getAllGifts(){
-        Call<String> allGifts = liveService.getAllGifts();
-        allGifts.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                L.e(TAG,"getAllGifts(),response = " + response);
-                String s = response.body();
-                Result result = ResultUtils.getListResultFromJson(s,Gift.class);
-                if (result != null && result.isRetMsg()){
-                    List<Gift>list = (List<Gift>) result.getRetData();
-                    for (Gift gift:list) {
-                        L.e(TAG,"gift = " + gift);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                L.e(TAG,"onFailure,t" + t.toString());
-            }
-        });
-    }
-
-    public User loadUserInfo(String username) throws IOException {
-        User user = null;
-        Call<String> call = liveService.loadUserInfo(username);
-        Response<String> response = call.execute();
-        String s = response.body();
-        Result result = ResultUtils.getResultFromJson(s,User.class);
+    public List<Gift> getAllGifts() throws LiveException {
+        Call<String> call = liveService.getAllGifts();
+        Result<List<Gift>> result = handleResponseCallToResultList(call, Gift.class);
         if (result != null && result.isRetMsg()){
-            user = (User) result.getRetData();
+            return result.getRetData();
         }
-        return user;
+        return null;
     }
+
+    public User loadUserInfo(String username) throws IOException, LiveException {
+        Call<String> call = liveService.loadUserInfo(username);
+        Result<User> result = handleResponseCallToResult(call, User.class);
+        if (result != null && result.isRetMsg()){
+            return result.getRetData();
+        }
+        return null;
+    }
+
+    private <T> Result<T>handleResponseCallToResult(Call<String> responseCall,Class<T>clazz) throws LiveException{
+        try {
+            Response<String> response = responseCall.execute();
+            if(!response.isSuccessful()) {
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String s = response.body();
+            return ResultUtils.getResultFromJson(s,clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+
+    private <T> Result<List<T>>handleResponseCallToResultList
+            (Call<String>call, Class<T>clazz) throws LiveException{
+        try {
+            Response<String> response = call.execute();
+            if(!response.isSuccessful()) {
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String s = response.body();
+            return ResultUtils.getListResultFromJson(s,clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+
 
 
     public LiveRoom createLiveRoom(String name, String description, String coverUrl) throws LiveException {

@@ -17,6 +17,7 @@ import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
 import cn.ucai.live.data.model.UserModel;
 import cn.ucai.live.data.restapi.ApiManager;
+import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.PreferenceManager;
@@ -112,35 +113,11 @@ public class UserProfileManager {
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
+				} catch (LiveException e) {
+					e.printStackTrace();
 				}
 			}
 		}).start();
-		/*userModel.loadUserInfo(appContext, EMClient.getInstance().getCurrentUser(),
-				new OnCompleteListener<String>() {
-			@Override
-			public void onSuccess(String result) {
-				L.e(TAG,"asyncGetAppCurrentUserInfo(),result = " + result);
-				if (result != null){
-					L.e(TAG,"asyncGetAppCurrentUserInfo(),result1 = " + result);
-					Result res = ResultUtils.getResultFromJson(result, User.class);
-					if (res != null && res.isRetMsg()){
-						User user = (User) res.getRetData();
-						L.e(TAG,"asyncGetAppCurrentUserInfo(),user = " + user);
-						//将数据保存到首选项、内存和数据库中
-						if (user != null){
-							currentAppUser = user;
-							setCurrentAppUserNick(user.getMUserNick());
-							L.e(TAG,"user.getMUserNick() = " + user.getMUserNick());
-							setCurrentAppUserAvatar(user.getAvatar());
-						}
-					}
-				}
-			}
-			@Override
-			public void onError(String error) {
-				L.e(TAG,"error = " + error);
-			}
-		});*/
 	}
 
 	private void updateCurrentAppUserInfo(User user) {
