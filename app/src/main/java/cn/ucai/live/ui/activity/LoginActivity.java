@@ -132,6 +132,8 @@ public class LoginActivity extends BaseActivity {
             L.e(TAG,"email.toString()  = " + email.toString());
           //登录成功后，异步加载用户信息，并保存到首选项、内存中
             LiveHelper.getInstance().getUserProfileManager().asyncGetAppCurrentUserInfo();
+          //异步加载礼品数据保存到内存和数据库
+            LiveHelper.getInstance().syncLoadGiftList();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }

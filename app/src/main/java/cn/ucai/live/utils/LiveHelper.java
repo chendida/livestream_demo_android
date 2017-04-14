@@ -19,9 +19,18 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.EMLog;
 
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import cn.ucai.live.LiveConstants;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.UserModel;
+import cn.ucai.live.data.restapi.ApiManager;
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.db.DBManager;
 import cn.ucai.live.db.UserProfileManager;
 import cn.ucai.live.ui.activity.MainActivity;
 
@@ -29,6 +38,8 @@ import cn.ucai.live.ui.activity.MainActivity;
 public class LiveHelper {
 
     protected static final String TAG = "DemoHelper";
+
+	private Map<Integer, Gift> giftList;
     
 	private EaseUI easeUI;
 	
@@ -264,5 +275,36 @@ public class LiveHelper {
 
     synchronized void reset(){
         getUserProfileManager().reset();
+		DBManager.getInstance().closeDB();
     }
+	public Map<Integer,Gift>getGiftList(){
+		if (giftList == null){
+			giftList = liveModel.getGiftList();
+		}
+		if (giftList == null){
+			giftList = new Hashtable<Integer, Gift>();
+		}
+		return giftList;
+	}
+
+	public void syncLoadGiftList(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					List<Gift> list = ApiManager.get().getAllGifts();
+					if (list != null && list.size() > 0){
+						//保存到内存
+						for (Gift gift:list) {
+							getGiftList().put(gift.getId(),gift);
+						}
+						//保存到数据库
+						liveModel.saveGiftList(list);
+					}
+				} catch (LiveException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
 }
