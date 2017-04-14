@@ -123,26 +123,16 @@ public class ApiManager {
         });
     }
 
-    public void loadUserInfo(){
-        Call<String> call = liveService.loadUserInfo(EMClient.getInstance().getCurrentUser());
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String s = response.body();
-                Result result = ResultUtils.getResultFromJson(s, User.class);
-                if (result != null && result.isRetMsg()){
-                    User user = (User) result.getRetData();
-                    if (user != null){
-                        L.e(TAG,"loadUserInfo(),user = " + user);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                L.e(TAG,"onFailure,t = " + t.toString());
-            }
-        });
+    public User loadUserInfo(String username) throws IOException {
+        User user = null;
+        Call<String> call = liveService.loadUserInfo(username);
+        Response<String> response = call.execute();
+        String s = response.body();
+        Result result = ResultUtils.getResultFromJson(s,User.class);
+        if (result != null && result.isRetMsg()){
+            user = (User) result.getRetData();
+        }
+        return user;
     }
 
 
@@ -311,6 +301,7 @@ public class ApiManager {
             throw new LiveException(e.getMessage());
         }
     }
+
 
     private RequestBody jsonToRequestBody(String jsonStr){
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);

@@ -9,12 +9,14 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
 import cn.ucai.live.data.model.UserModel;
+import cn.ucai.live.data.restapi.ApiManager;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.PreferenceManager;
@@ -99,7 +101,21 @@ public class UserProfileManager {
 				});
 	}
 	public void asyncGetAppCurrentUserInfo() {
-		userModel.loadUserInfo(appContext, EMClient.getInstance().getCurrentUser(),
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					User user = ApiManager.get().loadUserInfo(EMClient.getInstance().getCurrentUser());
+					L.e(TAG,"asyncGetAppCurrentUserInfo(),user = " + user);
+					if (user != null){
+						updateCurrentAppUserInfo(user);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		/*userModel.loadUserInfo(appContext, EMClient.getInstance().getCurrentUser(),
 				new OnCompleteListener<String>() {
 			@Override
 			public void onSuccess(String result) {
@@ -124,7 +140,14 @@ public class UserProfileManager {
 			public void onError(String error) {
 				L.e(TAG,"error = " + error);
 			}
-		});
+		});*/
+	}
+
+	private void updateCurrentAppUserInfo(User user) {
+		currentAppUser = user;
+		setCurrentAppUserNick(user.getMUserNick());
+		L.e(TAG,"user.getMUserNick() = " + user.getMUserNick());
+		setCurrentAppUserAvatar(user.getAvatar());
 	}
 
 	private void setCurrentAppUserNick(String nickname){
