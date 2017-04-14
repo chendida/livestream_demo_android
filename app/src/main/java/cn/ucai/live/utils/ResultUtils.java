@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -107,4 +108,19 @@ public class ResultUtils {
         }
         return  null;
     }*/
+
+    public static String getResultFromJson(String jsonStr){
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            if (!jsonObject.isNull("data")){
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (!data.isNull("id")){
+                    return data.getString("id");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

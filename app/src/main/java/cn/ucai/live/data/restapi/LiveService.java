@@ -18,4 +18,12 @@ public interface LiveService {
 
     @GET("live/getAllGifts")
     Call<String> getAllGifts();
+
+    @GET("live/createChatRoom")
+    Call<String>createLiveRoom(@Query("auth")String auth,
+                               @Query("name")String name,
+                               @Query("description")String description,
+                               @Query("owner")String owner,
+                               @Query("maxusers")int maxusers,
+                               @Query("members")String members);
 }

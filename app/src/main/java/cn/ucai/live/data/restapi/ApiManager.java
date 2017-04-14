@@ -100,6 +100,28 @@ public class ApiManager {
         return instance;
     }
 
+    public String createLiveRoom(String auth,String name,String description,String owner,
+                               int maxusers, String members){
+        Call<String> call = liveService.createLiveRoom(auth, name, description, owner, maxusers, members);
+        try {
+            Response<String> response = call.execute();
+            String s = response.body();
+            if (s != null){
+                String id = ResultUtils.getResultFromJson(s);
+                return id;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String createLiveRoom(String name,String description){
+        return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
+                300,EMClient.getInstance().getCurrentUser());
+    }
+
+
     public List<Gift> getAllGifts() throws LiveException {
         Call<String> call = liveService.getAllGifts();
         Result<List<Gift>> result = handleResponseCallToResultList(call, Gift.class);
@@ -162,24 +184,35 @@ public class ApiManager {
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
 
-        Call<ResponseModule<LiveRoom>> responseCall;
-        if(liveRoomId != null){
+        String id = createLiveRoom(name, description);
+        L.e(TAG,"createLiveRoomWithRequest,id = " + id);
+        if (id != null){
+            liveRoom.setId(id);
+            liveRoom.setChatroomId(id);
+        }else {
+            liveRoom.setId(liveRoomId);
+        }
+        //liveRoom.setAudienceNum(1);
+        //liveRoom.setLivePullUrl(name);
+
+        //Call<ResponseModule<LiveRoom>> responseCall;
+        /*if(liveRoomId != null){
             responseCall = apiService.createLiveShow(liveRoomId, liveRoom);
 
         }else {
             responseCall = apiService.createLiveRoom(liveRoom);
-        }
-        ResponseModule<LiveRoom> response = handleResponseCall(responseCall).body();
+        }*/
+        /*ResponseModule<LiveRoom> response = handleResponseCall(responseCall).body();
         LiveRoom room = response.data;
-        if(room.getId() != null) {
+        *//*if(room.getId() != null) {
             liveRoom.setId(room.getId());
         }else {
             liveRoom.setId(liveRoomId);
         }
-        liveRoom.setChatroomId(room.getChatroomId());
+        liveRoom.setChatroomId(room.getChatroomId());*//*
         //liveRoom.setAudienceNum(1);
-        liveRoom.setLivePullUrl(room.getLivePullUrl());
-        liveRoom.setLivePushUrl(room.getLivePushUrl());
+        liveRoom.setLivePullUrl(room.getLivePullUrl());*/
+        //liveRoom.setLivePushUrl(name);
         return liveRoom;
     }
 
