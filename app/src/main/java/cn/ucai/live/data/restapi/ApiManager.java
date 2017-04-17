@@ -106,12 +106,16 @@ public class ApiManager {
 
     public String createLiveRoom(String auth,String name,String description,String owner,
                                int maxusers, String members){
+        ALog.e("createLiveRoom,members = " + members);
         Call<String> call = liveService.createLiveRoom(auth, name, description, owner, maxusers, members);
         try {
             Response<String> response = call.execute();
+            ALog.e("response = " + response);
             String s = response.body();
+            ALog.e("response.body() = " + s);
             if (s != null){
                 String id = ResultUtils.getResultFromJson(s);
+                ALog.e("id = " + id);
                 return id;
             }
         } catch (IOException e) {
@@ -138,7 +142,7 @@ public class ApiManager {
 
     public String createLiveRoom(String name,String description){
         return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
-                300,EMClient.getInstance().getCurrentUser());
+                300,EMClient.getInstance().getCurrentUser()+",chen123,xsh123,hhhhh,nb,gsd123,zhu123456,seven009,cccccg,qwer000,chendida");
     }
 
 

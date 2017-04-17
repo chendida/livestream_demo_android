@@ -25,6 +25,7 @@ import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
 import cn.ucai.live.utils.Utils;
 
+import com.blankj.ALog;
 import com.bumptech.glide.Glide;
 import cn.ucai.live.LiveConstants;
 import com.hyphenate.EMCallBack;
@@ -394,6 +395,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         executeTask(new ThreadPoolManager.Task<Void>() {
             @Override public Void onRequest() throws HyphenateException {
                 try {
+                    ALog.e("memberList = " + memberList);
                     chatroom = EMClient.getInstance()
                             .chatroomManager()
                             .fetchChatRoomFromServer(chatroomId, true);
@@ -408,7 +410,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         for (int i = 0; i < MAX_SIZE; i++){
                             memberList.add(i, tempList.get(i));
                         }
+                    }else {
+                        memberList.addAll(tempList);
                     }
+                    ALog.e("tempList = " + tempList);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -543,11 +548,12 @@ public abstract class LiveBaseActivity extends BaseActivity {
                     showUserDetailsDialog(namelist.get(position));
                 }
             });
+            EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,namelist.get(position),holder.Avatar);
             //暂时使用测试数据
-            Glide.with(context)
+            /*Glide.with(context)
                     .load(avatarRepository.getAvatar())
                     .placeholder(R.drawable.ease_default_avatar)
-                    .into(holder.Avatar);
+                    .into(holder.Avatar);*/
         }
 
         @Override public int getItemCount() {
