@@ -92,6 +92,10 @@ public class RoomUserDetailsDialog extends DialogFragment {
                 if (username.equals(EMClient.getInstance().getCurrentUser())) {
                     setAdminButton.setVisibility(View.INVISIBLE);
                     managementLayout.setVisibility(View.INVISIBLE);
+                }else {
+                    if (adminList.contains(username)){
+                        setAdminButton.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         }
