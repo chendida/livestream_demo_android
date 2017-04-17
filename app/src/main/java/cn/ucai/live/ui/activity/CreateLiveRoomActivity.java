@@ -53,7 +53,6 @@ public class CreateLiveRoomActivity extends BaseActivity {
                 finish();
             }
         });
-
     }
 
 

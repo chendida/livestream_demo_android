@@ -112,6 +112,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         liveIdView.setText(liveId);
         audienceNumView.setText(String.valueOf(liveRoom.getAudienceNum()));
         watchedCount = liveRoom.getAudienceNum();
+        ALog.e("watchedCount = " +watchedCount);
     }
 
     private void initAnchor() {
@@ -422,9 +423,11 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             @Override public void onSuccess(Void aVoid) {
                 int size = chatroom.getMemberCount();
-                audienceNumView.setText(String.valueOf(size));
+                ALog.e("size = " + size);
+                audienceNumView.setText(String.valueOf(size - 1));
                 membersCount = size;
                 //观看人数不包含主播
+                ALog.e("watchedCount = " + watchedCount);
                 watchedCount = membersCount -1;
                 notifyDataSetChanged();
             }
@@ -437,8 +440,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
     private synchronized void onRoomMemberAdded(String name) {
         watchedCount++;
+        ALog.e("watchedCount = " + watchedCount);
         if (!memberList.contains(name)) {
             membersCount++;
+            ALog.e("membersCount = " + membersCount);
             if(memberList.size() >= MAX_SIZE)
                 memberList.removeLast();
             memberList.addFirst(name);
@@ -446,6 +451,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
             EMLog.d(TAG, name + "added");
             runOnUiThread(new Runnable() {
                 @Override public void run() {
+                    ALog.e("membersCount = " + membersCount);
                     audienceNumView.setText(String.valueOf(membersCount));
                     notifyDataSetChanged();
                 }
