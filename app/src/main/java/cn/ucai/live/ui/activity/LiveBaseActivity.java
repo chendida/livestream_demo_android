@@ -475,7 +475,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         EMLog.e(TAG, name + "exited");
         runOnUiThread(new Runnable() {
             @Override public void run() {
-                audienceNumView.setText(String.valueOf(membersCount));
+                audienceNumView.setText(String.valueOf(memberList.size()));
                 horizontalRecyclerView.getAdapter().notifyDataSetChanged();
                 if(name.equals(anchorId)){
                     showLongToast("主播已结束直播");
