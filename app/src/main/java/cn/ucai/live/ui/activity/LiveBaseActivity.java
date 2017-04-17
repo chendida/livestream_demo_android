@@ -35,6 +35,8 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import java.util.ArrayList;
@@ -46,6 +48,10 @@ import java.util.List;
  */
 public abstract class LiveBaseActivity extends BaseActivity {
     protected static final String TAG = "LiveActivity";
+    @BindView(R.id.iv_anchor_avatar)
+    EaseImageView ivAnchorAvatar;
+    @BindView(R.id.tv_username)
+    TextView tvUsername;
 
     //@BindView(R.id.left_gift_view1) LiveLeftGiftView leftGiftView;
     //@BindView(R.id.left_gift_view2) LiveLeftGiftView leftGiftView2;
@@ -64,7 +70,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @BindView(R.id.switch_camera_image) ImageView switchCameraView;
     @BindView(R.id.like_image) ImageView likeImageView;
     @BindView(R.id.txt_live_id) TextView liveIdView;
-    @BindView(R.id.tv_username) TextView usernameView;
+
 
     protected String anchorId;
 
@@ -100,10 +106,17 @@ public abstract class LiveBaseActivity extends BaseActivity {
         chatroomId = liveRoom.getChatroomId();
         anchorId = liveRoom.getAnchorId();
         onActivityCreate(savedInstanceState);
-        usernameView.setText(anchorId);
+        initAnchor();
+        //usernameView.setText(anchorId);
         liveIdView.setText(liveId);
         audienceNumView.setText(String.valueOf(liveRoom.getAudienceNum()));
         watchedCount = liveRoom.getAudienceNum();
+    }
+
+    private void initAnchor() {
+        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),tvUsername);
+        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,EMClient.getInstance().getCurrentUser(),
+                ivAnchorAvatar);
     }
 
     protected Handler handler = new Handler();
