@@ -100,7 +100,8 @@ public class RoomUserDetailsDialog extends DialogFragment {
             }
         }
         if (username != null) {
-            usernameView.setText(username);
+            //usernameView.setText(username);
+            EaseUserUtils.setAppUserNick(username,usernameView);
             EaseUserUtils.setAppUserAvatar(getContext(),username,ivMemberAvatar);
         }
         //mentionBtn.setText("@TA");
