@@ -123,4 +123,19 @@ public class ResultUtils {
         }
         return null;
     }
+
+    public static boolean getResultFromJsonIsDeleteSuccess(String jsonStr){
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            if (!jsonObject.isNull("data")){
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (!data.isNull("success")){
+                    return data.getBoolean("success");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

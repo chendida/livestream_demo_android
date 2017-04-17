@@ -2,14 +2,18 @@ package cn.ucai.live.data.restapi;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
+
+import com.blankj.ALog;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -114,6 +118,22 @@ public class ApiManager {
             e.printStackTrace();
         }
         return null;
+    }
+    public void deleteLiveRoom(String roomId){
+        Call<String> call = liveService.deleteLiveRoom("1IFgE", roomId);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                ALog.e("onResponse," + response.toString());
+                boolean deleteSuccess = ResultUtils.getResultFromJsonIsDeleteSuccess(response.body());
+                ALog.e("deleteSuccess = "+ deleteSuccess);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                ALog.e("onFailure" + t.toString());
+            }
+        });
     }
 
     public String createLiveRoom(String name,String description){
