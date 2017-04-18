@@ -203,12 +203,20 @@ public class ApiManager {
 
     private LiveRoom createLiveRoomWithRequest(String name, String description, String coverUrl, String liveRoomId) throws LiveException {
         LiveRoom liveRoom = new LiveRoom();
-        liveRoom.setName(name);
         liveRoom.setDescription(description);
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
-
-        String id = createLiveRoom(name, description);
+        ALog.e("coverUrl = " + coverUrl);
+        String s = "#live201612#";
+        String imgUrl = "";
+        if (coverUrl != null){
+            imgUrl = coverUrl.substring(coverUrl.lastIndexOf("/") + 1);
+            ALog.e("imgUrl = " + imgUrl);
+        }
+        String uName = name + s + imgUrl;
+        ALog.e("uName = " + uName);
+        liveRoom.setName(uName);
+        String id = createLiveRoom(uName, description);
         L.e(TAG,"createLiveRoomWithRequest,id = " + id);
         if (id != null){
             liveRoom.setId(id);

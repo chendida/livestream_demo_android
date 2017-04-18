@@ -170,16 +170,14 @@ public class LiveListFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            swipeRefreshLayout.setRefreshing(false);
+                            liveRoomList.clear();
                             if (chatRooms != null && chatRooms.size() > 0){
-                                LiveRoom liveRoom = new LiveRoom();
                                 for (EMChatRoom room:chatRooms) {
-                                    liveRoom.setId(room.getOwner());
-                                    liveRoom.setDescription(room.getDescription());
-                                    liveRoom.setChatroomId(room.getId());
-                                    liveRoom.setAnchorId(room.getOwner());
-                                    liveRoom.setName(room.getName());
-                                    liveRoom.setAudienceNum(room.getMemberCount());
-                                    liveRoomList.add(liveRoom);
+                                    LiveRoom liveRoom = chatRoomToliveRoom(room);
+                                    if (liveRoom != null){
+                                        liveRoomList.add(liveRoom);
+                                    }
                                 }
                                 if(adapter == null){
                                     adapter = new PhotoAdapter(getActivity(), liveRoomList);
@@ -197,6 +195,32 @@ public class LiveListFragment extends Fragment {
             }
         }).start();
         return true;
+    }
+
+    private LiveRoom chatRoomToliveRoom(EMChatRoom room) {
+        LiveRoom liveRoom = null;
+        if (room != null) {
+            liveRoom = new LiveRoom();
+            liveRoom.setId(room.getOwner());
+            liveRoom.setDescription(room.getDescription());
+            liveRoom.setChatroomId(room.getId());
+            liveRoom.setAnchorId(room.getOwner());
+            String s = "#live201612#";
+            if (room.getName().contains(s)) {
+                int index = room.getName().indexOf(s);
+                String name = room.getName().substring(0, index);
+                ALog.e("name = " + name);
+                String coverUrl = "https://a1.easemob.com/i/superwechat201612/chatfiles/"
+                        + room.getName().substring(index + s.length());
+                ALog.e("coverUrl = " + coverUrl);
+                liveRoom.setCover(coverUrl);
+                liveRoom.setName(name);
+            } else {
+                liveRoom.setName(room.getName());
+            }
+            liveRoom.setAudienceNum(room.getMemberCount());
+        }
+        return liveRoom;
     }
 
     private void hideLoadingView(boolean isLoadMore){
