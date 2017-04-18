@@ -23,6 +23,8 @@ import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.model.StatisticsType;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
+import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Utils;
 
 import com.blankj.ALog;
@@ -308,6 +310,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         //    barrageLayout.addBarrage(content,
                         //            EMClient.getInstance().getCurrentUser());
                         //}
+                        message.setAttribute(I.User.NICK, PreferenceManager.getInstance().getCurrentUserNick());
                         message.setChatType(EMMessage.ChatType.ChatRoom);
                         EMClient.getInstance().chatManager().sendMessage(message);
                         message.setMessageStatusCallback(new EMCallBack() {
