@@ -323,6 +323,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         //    barrageLayout.addBarrage(content,
                         //            EMClient.getInstance().getCurrentUser());
                         //}
+                        message.setAttribute(I.User.NICK, PreferenceManager.getInstance().getCurrentUserNick());
                         message.setChatType(EMMessage.ChatType.ChatRoom);
                         EMClient.getInstance().chatManager().sendMessage(message);
                         message.setMessageStatusCallback(new EMCallBack() {
