@@ -18,6 +18,7 @@ import com.hyphenate.easeui.domain.User;
 import java.io.IOException;
 import java.util.List;
 
+import cn.ucai.live.ucloud.AVOption;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.Result;
@@ -221,6 +222,8 @@ public class ApiManager {
         if (id != null){
             liveRoom.setId(id);
             liveRoom.setChatroomId(id);
+            liveRoom.setLivePullUrl(AVOption.streamPlayUrl);
+            liveRoom.setLivePushUrl(AVOption.streamPushUrl);
         }else {
             liveRoom.setId(liveRoomId);
         }
