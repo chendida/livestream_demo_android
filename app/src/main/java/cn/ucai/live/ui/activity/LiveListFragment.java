@@ -22,12 +22,16 @@ import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 
+import com.blankj.ALog;
 import com.bumptech.glide.Glide;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.restapi.ApiManager;
 import cn.ucai.live.ui.GridMarginDecoration;
 import cn.ucai.live.utils.L;
 
+import com.hyphenate.chat.EMChatRoom;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMPageResult;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +107,9 @@ public class LiveListFragment extends Fragment {
         }).start();
     }
     private void showLiveList(final boolean isLoadMore){
+        if (getLiveRoom()){
+            return;
+        }
         if(!isLoadMore)
             swipeRefreshLayout.setRefreshing(true);
         else
@@ -120,6 +127,7 @@ public class LiveListFragment extends Fragment {
             @Override public void onSuccess(ResponseModule<List<LiveRoom>> listResponseModule) {
                 hideLoadingView(isLoadMore);
                 List<LiveRoom> returnList = listResponseModule.data;
+                ALog.e("returnList = " + returnList);
                 if(returnList.size() < pageSize){
                     hasMoreData = false;
                     cursor = null;
@@ -145,6 +153,50 @@ public class LiveListFragment extends Fragment {
                 hideLoadingView(isLoadMore);
             }
         });
+    }
+
+    private boolean getLiveRoom() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final EMPageResult<EMChatRoom> result;
+                    int pageCount = -1;
+                    result = EMClient.getInstance().chatroomManager().
+                            fetchPublicChatRoomsFromServer(0, pageSize);
+                    //get chat room list
+                    final List<EMChatRoom> chatRooms = result.getData();
+                    pageCount = result.getPageCount();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (chatRooms != null && chatRooms.size() > 0){
+                                LiveRoom liveRoom = new LiveRoom();
+                                for (EMChatRoom room:chatRooms) {
+                                    liveRoom.setId(room.getOwner());
+                                    liveRoom.setDescription(room.getDescription());
+                                    liveRoom.setChatroomId(room.getId());
+                                    liveRoom.setAnchorId(room.getOwner());
+                                    liveRoom.setName(room.getName());
+                                    liveRoom.setAudienceNum(room.getMemberCount());
+                                    liveRoomList.add(liveRoom);
+                                }
+                                if(adapter == null){
+                                    adapter = new PhotoAdapter(getActivity(), liveRoomList);
+                                    recyclerView.setAdapter(adapter);
+                                }else{
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return true;
     }
 
     private void hideLoadingView(boolean isLoadMore){
