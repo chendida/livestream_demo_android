@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.ucai.live.LiveConstants;
 import cn.ucai.live.R;
 import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
@@ -205,12 +206,12 @@ public class LiveListFragment extends Fragment {
             liveRoom.setDescription(room.getDescription());
             liveRoom.setChatroomId(room.getId());
             liveRoom.setAnchorId(room.getOwner());
-            String s = "#live201612#";
+            String s = LiveConstants.LIVE_COVER;
             if (room.getName().contains(s)) {
                 int index = room.getName().indexOf(s);
                 String name = room.getName().substring(0, index);
                 ALog.e("name = " + name);
-                String coverUrl = "https://a1.easemob.com/i/superwechat201612/chatfiles/"
+                String coverUrl = LiveConstants.LIVE_COVER_PREFIX
                         + room.getName().substring(index + s.length());
                 ALog.e("coverUrl = " + coverUrl);
                 liveRoom.setCover(coverUrl);

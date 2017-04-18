@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.LiveConstants;
 import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
@@ -143,7 +144,7 @@ public class ApiManager {
 
     public String createLiveRoom(String name,String description){
         return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
-                300,EMClient.getInstance().getCurrentUser()+",chen123,xsh123,hhhhh,nb,gsd123,zhu123456,seven009,cccccg,qwer000,chendida");
+                300,EMClient.getInstance().getCurrentUser());
     }
 
 
@@ -208,7 +209,7 @@ public class ApiManager {
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
         ALog.e("coverUrl = " + coverUrl);
-        String s = "#live201612#";
+        String s = LiveConstants.LIVE_COVER;
         String imgUrl = "";
         if (coverUrl != null){
             imgUrl = coverUrl.substring(coverUrl.lastIndexOf("/") + 1);
