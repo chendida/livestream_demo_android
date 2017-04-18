@@ -1,5 +1,6 @@
 package cn.ucai.live.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -29,9 +30,10 @@ public class RoomUserManagementDialog extends DialogFragment {
 
     public RoomUserManagementDialog(){}
 
-    /*public RoomUserManagementDialog(String chatroomId){
+    @SuppressLint("ValidFragment")
+    public RoomUserManagementDialog(String chatroomId) {
         this.chatroomId = chatroomId;
-    }*/
+    }
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
