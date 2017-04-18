@@ -67,7 +67,6 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     }
 
     private void connectChatServer(){
-
         executeTask(new ThreadPoolManager.Task<LiveStatusModule.LiveStatus>() {
             @Override public LiveStatusModule.LiveStatus onRequest() throws HyphenateException {
                 return ApiManager.get().getLiveRoomStatus(liveId);

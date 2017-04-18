@@ -15,14 +15,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.exceptions.HyphenateException;
-
 import cn.ucai.live.R;
 import cn.ucai.live.utils.I;
 
@@ -65,7 +62,6 @@ public class RoomMessagesView extends RelativeLayout{
         closeView = (ImageView) findViewById(R.id.close_image);
         sendContainer = findViewById(R.id.container_send);
         //danmuImage = (ImageView) findViewById(R.id.danmu_image);
-
     }
 
     public EditText getInputView(){

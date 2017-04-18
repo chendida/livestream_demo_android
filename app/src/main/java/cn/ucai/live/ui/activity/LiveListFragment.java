@@ -109,6 +109,7 @@ public class LiveListFragment extends Fragment {
     }
     private void showLiveList(final boolean isLoadMore){
         if (getLiveRoom()){
+            ALog.e("getLiveRoom().........");
             return;
         }
         if(!isLoadMore)
@@ -147,7 +148,6 @@ public class LiveListFragment extends Fragment {
                 }else{
                     adapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override public void onError(HyphenateException exception) {
@@ -157,22 +157,28 @@ public class LiveListFragment extends Fragment {
     }
 
     private boolean getLiveRoom() {
+        ALog.e("getLiveRoom()111111111");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    ALog.e("getLiveRoom()2222222222");
                     final EMPageResult<EMChatRoom> result;
                     int pageCount = -1;
                     result = EMClient.getInstance().chatroomManager().
                             fetchPublicChatRoomsFromServer(0, pageSize);
+                    ALog.e("getLiveRoom()333333333333");
                     //get chat room list
                     final List<EMChatRoom> chatRooms = result.getData();
                     pageCount = result.getPageCount();
+                    ALog.e("getLiveRoom()444444444444");
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             swipeRefreshLayout.setRefreshing(false);
                             liveRoomList.clear();
+                            ALog.e("liveRoomList = " + liveRoomList.size());
+                            ALog.e("chatRooms = " + chatRooms.size());
                             if (chatRooms != null && chatRooms.size() > 0){
                                 for (EMChatRoom room:chatRooms) {
                                     LiveRoom liveRoom = chatRoomToliveRoom(room);
@@ -180,10 +186,13 @@ public class LiveListFragment extends Fragment {
                                         liveRoomList.add(liveRoom);
                                     }
                                 }
+                                ALog.e("liveRoomList = " + liveRoomList.size());
                                 if(adapter == null){
+                                    ALog.e("adapter == null= " + (adapter == null));
                                     adapter = new PhotoAdapter(getActivity(), liveRoomList);
                                     recyclerView.setAdapter(adapter);
                                 }else{
+                                    ALog.e("notifyDataSetChanged()");
                                     adapter.notifyDataSetChanged();
                                 }
                             }
