@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:background="#00000000">
+        android:background="#fff">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_gift"
             android:layout_width="match_parent"
