@@ -19,8 +19,11 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.EMLog;
 
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +42,8 @@ public class LiveHelper {
 
     protected static final String TAG = "DemoHelper";
 
-	private Map<Integer, Gift> giftList;
+	private Map<Integer, Gift> giftMap;
+	private List<Gift>giftList;
     
 	private EaseUI easeUI;
 	
@@ -277,13 +281,36 @@ public class LiveHelper {
         getUserProfileManager().reset();
 		DBManager.getInstance().closeDB();
     }
-	public Map<Integer,Gift>getGiftList(){
-		if (giftList == null){
-			giftList = liveModel.getGiftList();
+	public Map<Integer,Gift> getGiftMap(){
+		if (giftMap == null){
+			giftMap = liveModel.getGiftList();
 		}
-		if (giftList == null){
-			giftList = new Hashtable<Integer, Gift>();
+		if (giftMap == null){
+			giftMap = new Hashtable<Integer, Gift>();
 		}
+		return giftMap;
+	}
+
+	public List<Gift> getGiftList(){
+		        if (giftList==null){
+			            if (getGiftMap().size()>0){
+				                giftList = new ArrayList<>();
+				                Iterator<Map.Entry<Integer, Gift>> iterator = giftMap.entrySet().iterator();
+				                while (iterator.hasNext()){
+					                    giftList.add(iterator.next().getValue());
+					                }
+				                Collections.sort(giftList, new Comparator<Gift>() {
+					                   @Override
+					public int compare(Gift gift, Gift t1) {
+						return gift.getGprice().compareTo(t1.getGprice());
+						}
+					});
+				}
+			}
+		if (giftList==null){
+			giftList = new ArrayList<>();
+			}
+
 		return giftList;
 	}
 
@@ -296,7 +323,7 @@ public class LiveHelper {
 					if (list != null && list.size() > 0){
 						//保存到内存
 						for (Gift gift:list) {
-							getGiftList().put(gift.getId(),gift);
+							getGiftMap().put(gift.getId(),gift);
 						}
 						//保存到数据库
 						liveModel.saveGiftList(list);
