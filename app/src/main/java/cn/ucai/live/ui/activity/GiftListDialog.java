@@ -98,6 +98,12 @@ public class GiftListDialog extends DialogFragment {
         unbinder.unbind();
     }
 
+    private View.OnClickListener eventListener;
+
+    public void setGiftEventListener(View.OnClickListener eventListener) {
+        this.eventListener = eventListener;
+    }
+
     class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.GiftViewHolder> {
         Context mContext;
         List<Gift> mList;
@@ -142,6 +148,8 @@ public class GiftListDialog extends DialogFragment {
                 EaseUserUtils.setAvatar(mContext, gift.getGurl(), mIvGiftThumb);
                 mTvGiftName.setText(gift.getGname());
                 mTvGiftPrice.setText(String.valueOf(gift.getGprice()));
+                itemView.setTag(gift.getId());
+                itemView.setOnClickListener(eventListener);
             }
         }
     }

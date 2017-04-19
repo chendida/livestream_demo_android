@@ -9,11 +9,14 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.live.R;
+import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.utils.LiveHelper;
 
 /**
  * Created by wei on 2016/6/7.
@@ -24,8 +27,10 @@ public class LiveLeftGiftView extends RelativeLayout {
     EaseImageView avatar;
     @BindView(R.id.name)
     TextView name;
-    @BindView(R.id.gift_image)
+    @BindView(R.id.iv_gift_image)
     ImageView giftImage;
+    @BindView(R.id.gift_name)
+    TextView giftName;
 
     public LiveLeftGiftView(Context context) {
         super(context);
@@ -47,15 +52,23 @@ public class LiveLeftGiftView extends RelativeLayout {
         ButterKnife.bind(this);
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name.setText(name);
     }
 
-    public void setAvatar(String avatar){
-        Glide.with(getContext()).load(avatar).into(this.avatar);
+    public void setAvatar(String avatar) {
+        //Glide.with(getContext()).load(avatar).into(this.avatar);
+        EaseUserUtils.setAppUserAvatar(getContext(),avatar,this.avatar);
+    }
+    public void setGift(int giftId){
+        Gift gift = LiveHelper.getInstance().getGiftMap().get(giftId);
+        if (gift != null){
+            this.giftName.setText(gift.getGname());
+            EaseUserUtils.setAvatar(getContext(),gift.getGurl(),giftImage);
+        }
     }
 
-    public ImageView getGiftImageView(){
+    public ImageView getGiftImageView() {
         return giftImage;
     }
 }

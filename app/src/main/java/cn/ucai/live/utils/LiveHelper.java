@@ -291,16 +291,23 @@ public class LiveHelper {
 		return giftMap;
 	}
 
+	/**
+	 * 将存礼品的Map转化为List
+	 * @return
+     */
 	public List<Gift> getGiftList(){
-		        if (giftList==null){
-			            if (getGiftMap().size()>0){
-				                giftList = new ArrayList<>();
-				                Iterator<Map.Entry<Integer, Gift>> iterator = giftMap.entrySet().iterator();
-				                while (iterator.hasNext()){
-					                    giftList.add(iterator.next().getValue());
-					                }
-				                Collections.sort(giftList, new Comparator<Gift>() {
-					                   @Override
+		if (giftList==null){
+			if (getGiftMap().size()>0){
+				giftList = new ArrayList<>();
+				Iterator<Map.Entry<Integer, Gift>> iterator = giftMap.entrySet().iterator();
+				while (iterator.hasNext()){
+					giftList.add(iterator.next().getValue());
+				}
+				/*
+				按照礼品价格进行排序
+				 */
+				Collections.sort(giftList, new Comparator<Gift>() {
+					@Override
 					public int compare(Gift gift, Gift t1) {
 						return gift.getGprice().compareTo(t1.getGprice());
 						}
@@ -309,8 +316,7 @@ public class LiveHelper {
 			}
 		if (giftList==null){
 			giftList = new ArrayList<>();
-			}
-
+		}
 		return giftList;
 	}
 
