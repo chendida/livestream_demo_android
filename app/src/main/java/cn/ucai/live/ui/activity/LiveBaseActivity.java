@@ -25,6 +25,7 @@ import cn.ucai.live.ui.widget.LiveLeftGiftView;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
 import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.LiveHelper;
 import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Utils;
 
@@ -243,7 +244,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         EMMessage message = EMMessage.createReceiveMessage(EMMessage.Type.TXT);
         message.setTo(chatroomId);
         message.setFrom(username);
-        EMTextMessageBody textMessageBody = new EMTextMessageBody(event);
+        EMTextMessageBody textMessageBody = new EMTextMessageBody(username + "  "+event);
         message.addBody(textMessageBody);
         message.setChatType(EMMessage.ChatType.ChatRoom);
         EMClient.getInstance().chatManager().saveMessage(message);
@@ -290,7 +291,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         @Override public void onCmdMessageReceived(List<EMMessage> messages) {
             EMMessage message = messages.get(messages.size() - 1);
             if (LiveConstants.CMD_GIFT.equals(((EMCmdMessageBody) message.getBody()).action())) {
-                //showLeftGiftView(message.getFrom());
+                showLeftGiftView(message);
             } else if(LiveConstants.CMD_PRAISE.equals(((EMCmdMessageBody) message.getBody()).action())) {
                 showPraise(message.getIntAttribute(LiveConstants.EXTRA_PRAISE_COUNT, 1));
             }
