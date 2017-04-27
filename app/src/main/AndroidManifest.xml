@@ -90,10 +90,15 @@
 
         <activity
             android:name=".ui.activity.AssociateLiveRoomActivity"
-            android:screenOrientation="portrait"></activity>
-        <service android:name=".utils.MyService"
-            android:exported="true"
-            />
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".utils.MyService"
+            android:exported="true" />
+        <service
+            android:name=".utils.GiftService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -40,4 +40,14 @@ public class Gift {
     public void setGprice(Integer gprice) {
         this.gprice = gprice;
     }
+
+    @Override
+    public String toString() {
+        return "Gift{" +
+                "id=" + id +
+                ", gname='" + gname + '\'' +
+                ", gurl='" + gurl + '\'' +
+                ", gprice=" + gprice +
+                '}';
+    }
 }

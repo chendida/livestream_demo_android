@@ -1,19 +1,27 @@
 package cn.ucai.live.ui.activity;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.R;
+import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.utils.GiftService;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.LiveHelper;
 import cn.ucai.live.utils.MyService;
 
+import com.blankj.ALog;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+
+import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
@@ -34,11 +42,52 @@ public class MainActivity extends BaseActivity {
 
         processConflictIntent(getIntent());
     }
+    GiftService mService;
+    boolean mBound = false;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this,GiftService.class);
+        bindService(intent,mConnection,BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound){
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            GiftService.GiftBinder binder = (GiftService.GiftBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 
     @OnClick(R.id.floatingActionButton) void createLiveRoom() {
+        new  Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Gift> gifts = mService.getGiftList();
+                for (Gift gift : gifts){
+                    ALog.e("gift = " + gift);
+                }
+            }
+        }).start();
         //startActivity(new Intent(this, CreateLiveRoomActivity.class));
-        startService(new Intent(MainActivity.this, MyService.class)
-                .putExtra(I.User.USER_NAME,EMClient.getInstance().getCurrentUser()));
+        /*startService(new Intent(MainActivity.this, MyService.class)
+                .putExtra(I.User.USER_NAME,EMClient.getInstance().getCurrentUser()));*/
     }
 
     @OnClick(R.id.txt_logout) void logout() {
