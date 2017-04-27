@@ -124,6 +124,21 @@ public class ResultUtils {
         return null;
     }
 
+    public static String getMoneyFromJson(String jsonStr){
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            if (!jsonObject.isNull("retData")){
+                JSONObject data = jsonObject.getJSONObject("retData");
+                if (!data.isNull("balance")){
+                    return data.getString("balance");
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static boolean getResultFromJsonIsDeleteSuccess(String jsonStr){
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);

@@ -29,4 +29,6 @@ public interface LiveService {
     @GET("live/deleteChatRoom")
     Call<String>deleteLiveRoom(@Query("auth")String auth,
                                @Query("chatRoomId")String roomId);
+    @GET("live/getBalance")
+    Call<String>findMoney(@Query("uname")String uname);
 }

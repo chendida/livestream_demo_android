@@ -154,6 +154,24 @@ public class ApiManager {
         }
         return null;
     }
+    public void getMoney(String name){
+        Call<String> call = liveService.findMoney(name);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String s = response.body();
+                if (s != null){
+                    String money = ResultUtils.getMoneyFromJson(s);
+                    ALog.e("money = " + money);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
 
     public User loadUserInfo(String username) throws IOException, LiveException {
         Call<String> call = liveService.loadUserInfo(username);

@@ -8,7 +8,9 @@ import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.R;
+import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.LiveHelper;
+import cn.ucai.live.utils.MyService;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
@@ -34,7 +36,9 @@ public class MainActivity extends BaseActivity {
     }
 
     @OnClick(R.id.floatingActionButton) void createLiveRoom() {
-        startActivity(new Intent(this, CreateLiveRoomActivity.class));
+        //startActivity(new Intent(this, CreateLiveRoomActivity.class));
+        startService(new Intent(MainActivity.this, MyService.class)
+                .putExtra(I.User.USER_NAME,EMClient.getInstance().getCurrentUser()));
     }
 
     @OnClick(R.id.txt_logout) void logout() {
